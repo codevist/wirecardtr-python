@@ -75,7 +75,7 @@ def ProApi(request):
         input_request.Country=""
         input_request.Currency=""
         input_request.Extra=""
-        input_request.TurkcellServiceId="20923735"
+        input_request.TurkcellServiceId=""
 
         #region Token
         token_request= Token()
@@ -119,7 +119,7 @@ def ApiPlus(request):
         input_request.RequestGsmOperator=0
         input_request.RequestGsmType=0
         input_request.Extra=""
-        input_request.TurkcellServiceId="20923735"
+        input_request.TurkcellServiceId=""
         input_request.CustomerIpAddress="http://127.0.0.1:8000/ApiPlus"
 
         #region Token
