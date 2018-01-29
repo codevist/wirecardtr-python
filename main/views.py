@@ -15,11 +15,13 @@ from main.wirecard_lib.MarketPlaceDeactiveRequest import MarketPlaceDeactiveRequ
 from main.wirecard_lib.MarketPlaceSale3DSecOrMpSaleRequest import MarketPlaceSale3DSecOrMpSaleRequest
 from main.wirecard_lib.MarketPlaceReleasePaymentRequest import MarketPlaceReleasePaymentRequest
 from main.wirecard_lib.WDTicketSale3DURLOrSaleUrlProxyRequest import WDTicketSale3DURLOrSaleUrlProxyRequest
+from main.wirecard_lib.MarketPlaceMPSaleRequest import MarketPlaceMPSaleRequest
 from main.wirecard_lib.Token import Token
 from main.wirecard_lib.Input import Input
 from main.wirecard_lib.ContactInfo import ContactInfo
 from main.wirecard_lib.FinancialInfo import FinancialInfo
 from main.wirecard_lib.CreditCardInfo import CreditCardInfo
+from main.wirecard_lib.CardTokenization import CardTokenization
 from main.wirecard_lib.Product import Product
 from zeep import Client
 from dateutil import parser
@@ -75,7 +77,7 @@ def ProApi(request):
         input_request.Country=""
         input_request.Currency=""
         input_request.Extra=""
-        input_request.TurkcellServiceId=""
+        input_request.TurkcellServiceId="20923735"
 
         #region Token
         token_request= Token()
@@ -119,7 +121,7 @@ def ApiPlus(request):
         input_request.RequestGsmOperator=0
         input_request.RequestGsmType=0
         input_request.Extra=""
-        input_request.TurkcellServiceId=""
+        input_request.TurkcellServiceId="20923735"
         input_request.CustomerIpAddress="http://127.0.0.1:8000/ApiPlus"
 
         #region Token
@@ -429,15 +431,16 @@ def MarketPlaceSale3DSec(request):
 def MarketPlaceMPSale(request):
     message=""
     if request.POST:
-        req=MarketPlaceSale3DSecOrMpSaleRequest()
+        req=MarketPlaceMPSaleRequest()
         req.ServiceType = "CCMarketPlace"
         req.OperationType = "MPSale"
-        req.MPAY = ""
+        req.Price="1" #0.01 TL
+        req.MPAY = "01"
         req.IPAddress = "127.0.0.1"
         req.Port = "123"
         req.Description = "Bilgisayar"
         req.InstallmentCount =request.POST.get('installmentCount')
-        req.CommissionRate = "100"; #komisyon oranı 1. 100 ile çarpılıp gönderiliyor
+        req.CommissionRate = "1"; #komisyon oranı 1. 100 ile çarpılıp gönderiliyor
         req.ExtraParam = ""
         req.PaymentContent = "BLGSYR01"
         req.SubPartnerId =request.POST.get('subPartnerId')
@@ -457,7 +460,15 @@ def MarketPlaceMPSale(request):
         req.CreditCardInfo.ExpireYear =request.POST.get('expireYear')
         req.CreditCardInfo.ExpireMonth =request.POST.get('expireMonth')
         req.CreditCardInfo.Cvv =request.POST.get('cvv')
-        req.CreditCardInfo.Price = "1";#0,01 TL
+        #endregion
+       
+        #region CardTokenization
+        req.CardTokenization = CardTokenization()
+        req.CardTokenization.RequestType="0"
+        req.CardTokenization.CustomerId="01"
+        req.CardTokenization.ValidityPeriod="0"
+        req.CardTokenization.CCTokenId=str(uuid.uuid4())
+
         #endregion
         message = req.execute(req,config) # Xml servis çağrısının başlatıldığı kısım
     return render_to_response('marketplaceMpSale.html', {'message': message})
