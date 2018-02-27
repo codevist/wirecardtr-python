@@ -62,5 +62,5 @@ Testleriniz sırasında aşağıdaki kart numaralarını ve diğer bilgileri kul
 ## Destek
 
 Entegrasyon sırasında karşılaştığınız ve çözüm bulamadığınız her konuda bizimle iletişime geçebilir; istek, öneri, talep ve her türlü görüşlerinizi bizimle paylaşabilirsiniz. 
-Bizimle iletişime geçmek için **integration@3pay.com** adresine e-posta gönderebilir veya [iletişim Formu](https://developer.wirecard.com.tr/tr/bize-ulasin) yardımıyla bizlere ulaşabilirsiniz.
+Bizimle iletişime geçmek için **integration@3pay.com** adresine e-posta gönderebilir veya [iletişim Formu](http://developer.wirecard.com.tr/tr/bize-ulasin) yardımıyla bizlere ulaşabilirsiniz.
 
