@@ -32,7 +32,7 @@ class Input:
     LastSuccessfulPaymentDateMax=""
     SubscriberId=""
     UniqueId=""
-
+    orderId=""
     class Product:
         ProductId=""
         ProductCategory=""

@@ -42,8 +42,16 @@
                 </li>
                 
                 <li>
-                    <li><a href="{% url 'CCProxySale' %}">Ödeme Formu </a></li>
+                    <a href="#pageSubmenu4" data-toggle="collapse" aria-expanded="false"> Ödeme Formu</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu4">
+
+                        <li><a href="{% url 'CCProxySale3D' %}">3D Secure İle ödeme </a></li>
+                        <li><a href="{% url 'CCProxySale' %}">3D Secure Olmadan ödeme </a></li>
+                    </ul>
                 </li>
+
+
+           
                 <li>
                     <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false">Ortak Ödeme Formu</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu2">
@@ -64,6 +72,14 @@
                     <li><a href="{% url 'MarketPlaceReleasePayment' %}">Ödeme Onay Servisi </a></li>
           
                    
+                    </ul>
+                </li>
+                <li>
+                    <a href="#pageSubmenu5" data-toggle="collapse" aria-expanded="false">İşlem Sorgulama</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu5">
+
+                        <li><a href="{% url 'TransactionQueryByOrderId' %}">Sipariş Numarası ile İşlem Sorgulama </a></li>
+                        <li><a href="{% url 'TransactionQueryByMPAY' %}">MPAY ile İşlem Sorgulama </a></li>
                     </ul>
                 </li> 
              

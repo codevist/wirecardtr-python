@@ -9,6 +9,7 @@ from main.wirecard_lib.SubscriberSelectRequest import SubscriberSelectRequest
 from main.wirecard_lib.SubscriberDetailRequest import SubscriberDetailRequest
 from main.wirecard_lib.SubscriberDeactivateRequest import SubscriberDeactivateRequest
 from main.wirecard_lib.CCProxySaleRequest import CCProxySaleRequest
+from main.wirecard_lib.CCProxySale3DRequest import CCProxySale3DRequest
 from main.wirecard_lib.MarketPlaceAddSubPartnerRequest import MarketPlaceAddSubPartnerRequest
 from main.wirecard_lib.MarketPlaceUpdateSubPartnerRequest import MarketPlaceUpdateSubPartnerRequest
 from main.wirecard_lib.MarketPlaceDeactiveRequest import MarketPlaceDeactiveRequest
@@ -16,6 +17,8 @@ from main.wirecard_lib.MarketPlaceSale3DSecOrMpSaleRequest import MarketPlaceSal
 from main.wirecard_lib.MarketPlaceReleasePaymentRequest import MarketPlaceReleasePaymentRequest
 from main.wirecard_lib.WDTicketSale3DURLOrSaleUrlProxyRequest import WDTicketSale3DURLOrSaleUrlProxyRequest
 from main.wirecard_lib.MarketPlaceMPSaleRequest import MarketPlaceMPSaleRequest
+from main.wirecard_lib.TransactionQueryByOrderRequest import TransactionQueryByOrderRequest
+from main.wirecard_lib.TransactionQueryByMPAYRequest import TransactionQueryByMPAYRequest
 from main.wirecard_lib.Token import Token
 from main.wirecard_lib.Input import Input
 from main.wirecard_lib.ContactInfo import ContactInfo
@@ -33,10 +36,10 @@ import json
 config = Configs(
     #"Public Magaza Anahtarı
     # size mağaza başvurunuz sonucunda gönderilen public key (açık anahtar) bilgisini kullanınız.",
-    '',
+    '20923',
     #"Private Magaza Anahtarı
     # size mağaza başvurunuz sonucunda gönderilen privaye key (gizli anahtar) bilgisini kullanınız.",
-    '',
+    '535D7D1B5DA6407EB7F6',
     #Wirecard xml servisleri API url'lerinin  bilgisidir.
     'https://www.wirecard.com.tr/SGate/Gate', #BaseUrl
 )
@@ -77,7 +80,7 @@ def ProApi(request):
         input_request.Country=""
         input_request.Currency=""
         input_request.Extra=""
-        input_request.TurkcellServiceId="20923735"
+        input_request.TurkcellServiceId="0"
 
         #region Token
         token_request= Token()
@@ -121,7 +124,7 @@ def ApiPlus(request):
         input_request.RequestGsmOperator=0
         input_request.RequestGsmType=0
         input_request.Extra=""
-        input_request.TurkcellServiceId="20923735"
+        input_request.TurkcellServiceId=""
         input_request.CustomerIpAddress="http://127.0.0.1:8000/ApiPlus"
 
         #region Token
@@ -233,6 +236,51 @@ def CCProxySale(request):
         req.Description = "Bilgisayar"
         req.InstallmentCount =request.POST.get('installmentCount')
         req.ExtraParam = ""
+        req.Port = "123"
+        #region Token
+        req.Token=Token()
+        req.Token.UserCode=config.UserCode
+        req.Token.Pin=config.Pin
+        #endregion
+
+        #region CreditCardInfo
+        req.CreditCardInfo = CreditCardInfo()
+        req.CreditCardInfo.CreditCardNo =request.POST.get('creditCardNo')
+        req.CreditCardInfo.OwnerName =request.POST.get('ownerName')
+        req.CreditCardInfo.ExpireYear =request.POST.get('expireYear')
+        req.CreditCardInfo.ExpireMonth =request.POST.get('expireMonth')
+        req.CreditCardInfo.Cvv =request.POST.get('cvv')
+        req.CreditCardInfo.Price = "1";#0,01 TL
+        #endregion
+        #region CardTokenization
+        req.CardTokenization = CardTokenization()
+        req.CardTokenization.RequestType="0"
+        req.CardTokenization.CustomerId="01"
+        req.CardTokenization.ValidityPeriod="0"
+        req.CardTokenization.CCTokenId=str(uuid.uuid4())
+
+        #endregion
+        message = req.execute(req,config) # Xml servis çağrısının başlatıldığı kısım
+
+       
+
+    return render_to_response('ccProxySaleRequest.html', {'message': message}) 
+
+def CCProxySale3D(request):
+    message=""
+    if request.POST:
+        req=CCProxySale3DRequest()
+        req.ServiceType = "CCProxy"
+        req.OperationType = "Sale3DSEC"
+        req.MPAY = ""
+        req.IPAddress = "127.0.0.1"
+        req.PaymentContent = "BLGSYR01"
+        req.Description = "Bilgisayar"
+        req.InstallmentCount =request.POST.get('installmentCount')
+        req.ExtraParam = ""
+        req.ErrorURL = "http://127.0.0.1:8000/fail"
+        req.SuccessURL = "http://127.0.0.1:8000/home/success"
+        req.Port = "123"
        
         #region Token
         req.Token=Token()
@@ -249,11 +297,19 @@ def CCProxySale(request):
         req.CreditCardInfo.Cvv =request.POST.get('cvv')
         req.CreditCardInfo.Price = "1";#0,01 TL
         #endregion
-        message = req.execute(req,config) # Xml servis çağrısının başlatıldığı kısım
+        #region CardTokenization
+        req.CardTokenization = CardTokenization()
+        req.CardTokenization.RequestType="0"
+        req.CardTokenization.CustomerId="01"
+        req.CardTokenization.ValidityPeriod="0"
+        req.CardTokenization.CCTokenId=str(uuid.uuid4())
 
+        #endregion
+        message = req.execute(req,config) # Xml servis çağrısın
+        
        
 
-    return render_to_response('ccProxySaleRequest.html', {'message': message}) 
+    return render_to_response('ccProxySale3dRequest.html', {'message': message}) 
 
 def WDTicketSale3DURLProxy(request):
      message=""
@@ -407,9 +463,9 @@ def MarketPlaceSale3DSec(request):
         req.ExtraParam = ""
         req.PaymentContent = "BLGSYR01"
         req.SubPartnerId =request.POST.get('subPartnerId')
-        req.ErrorURL = "http://127.0.0.1:8000/MarketPlaceError"
-        req.SuccessURL = "http://127.0.0.1:8000/home/MarketPlaceSuccess"
-
+        req.ErrorURL = "http://127.0.0.1:8000/fail"
+        req.SuccessURL = "http://127.0.0.1:8000/home/success"
+        req.Port = "123"
         #region Token
         req.Token=Token()
         req.Token.UserCode=config.UserCode
@@ -424,6 +480,14 @@ def MarketPlaceSale3DSec(request):
         req.CreditCardInfo.ExpireMonth =request.POST.get('expireMonth')
         req.CreditCardInfo.Cvv =request.POST.get('cvv')
         req.CreditCardInfo.Price = "1";#0,01 TL
+        #endregion
+        #region CardTokenization
+        req.CardTokenization = CardTokenization()
+        req.CardTokenization.RequestType="0"
+        req.CardTokenization.CustomerId="01"
+        req.CardTokenization.ValidityPeriod="0"
+        req.CardTokenization.CCTokenId=str(uuid.uuid4())
+
         #endregion
         message = req.execute(req,config) # Xml servis çağrısının başlatıldığı kısım
     return render_to_response('marketplaceSale3DSec.html', {'message': message})
@@ -491,6 +555,41 @@ def MarketPlaceReleasePayment(request):
         #endregion 
         message = req.execute(req,config) # Xml servis çağrısının başlatıldığı kısım
      return render_to_response('marketplaceReleasePayment.html', {'message': message})
+
+def TransactionQueryByOrderId(request):
+    message=""
+    if request.POST:
+       input_request=Input()
+       input_request.orderId=request.POST.get('orderId') 
+       #endregion
+
+       #region Token
+       token_request= Token()
+       token_request.UserCode=config.UserCode
+       token_request.Pin=config.Pin
+       #region EndToken 
+
+       req= TransactionQueryByOrderRequest()
+       message= req.execute(token_request,input_request) #Soap servis çağrısının başlatıldığı kısım. 
+    return render_to_response('transactionQueryByOrderId.html', {'message': message}) 
+def TransactionQueryByMPAY(request):
+    message=""
+    if request.POST:
+       input_request=Input()
+       input_request.MPAY=request.POST.get('MPAY') 
+       #endregion
+
+       #region Token
+       token_request= Token()
+       token_request.UserCode=config.UserCode
+       token_request.Pin=config.Pin
+       #region EndToken 
+
+       req= TransactionQueryByMPAYRequest()
+       message= req.execute(token_request,input_request) #Soap servis çağrısının başlatıldığı kısım. 
+    return render_to_response('transactionQueryByMPAY.html', {'message': message}) 
+
+
 
 def success(request):
      return render(request,'success.html',locals())

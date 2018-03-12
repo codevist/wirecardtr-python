@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2> MPAY ile işlem Sorgulama</h2>
+
+<form action="" method="post">
+    <!-- Text input-->
+    <div class="form-group">
+        <div class="row">
+
+            <label class="col-md-12 control-label" for="">MPAY</label>
+            <div class="col-md-3">
+                <input name="MPAY" type="text" value="" class="form-control" required="">
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-md-12 control-label" for=""></label>
+            <div class="col-md-4">
+                <br />
+                <button type="submit" id="" name="" class="btn btn-danger">MPay ile işlem Sorgula</button>
+            </div>
+        </div>
+       
+    </div>
+</form>
+<div class="row">
+    <br />
+    <div class="col-md-12">
+        <pre>
+            {% if message %}
+            {{ message }}
+            {% endif %}
+            </pre>
+        </pre>
+    </div>
+</div>
+{% endblock %}

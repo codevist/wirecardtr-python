@@ -21,6 +21,7 @@ class MarketPlaceSale3DSecOrMpSaleRequest:
     CommissionRate=""
     SubPartnerId=""
     PaymentContent=""
+    CardTokenization=""
 
     def execute(self, req,configs):     
         helper = Helper()
@@ -76,5 +77,16 @@ class MarketPlaceSale3DSecOrMpSaleRequest:
         Cvv.text = req.CreditCardInfo.Cvv
         Price= SubElement(creditcardinfo_root, 'Price')
         Price.text = req.CreditCardInfo.Price
+
+        cardTokenization_root=SubElement(main_root, 'CardTokenization')
+        RequestType = SubElement(cardTokenization_root, 'RequestType')
+        RequestType.text = req.CardTokenization.RequestType
+        CustomerId = SubElement(cardTokenization_root, 'CustomerId')
+        CustomerId.text = req.CardTokenization.CustomerId
+        ValidityPeriod = SubElement(cardTokenization_root, 'ValidityPeriod')
+        ValidityPeriod.text = req.CardTokenization.ValidityPeriod
+        CCTokenId = SubElement(cardTokenization_root, 'CCTokenId')
+        CCTokenId.text = req.CardTokenization.CCTokenId
+
         result = tostring(main_root).decode('utf-8')
         return (result)

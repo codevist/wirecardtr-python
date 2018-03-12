@@ -1,10 +1,10 @@
 from main.wirecard_lib.Helper import Helper, HttpClient
 from main.wirecard_lib.configs import Configs
 from xml.etree.ElementTree import Element, SubElement, tostring
-#CCProxySaleRequest Xml  çağrısının yapıldığı alanı temsil eder.
+#CCProxySale3DRequest Xml  çağrısının yapıldığı alanı temsil eder.
 #Xml çağrısı yapılıp servis cevabı ekranda gösterilmek üzere views kısmına çağrının yapıldığı yere gönderilir.
 #İstenen Xml metni convert_to_xml metodu sayesinde oluşturulur.
-class CCProxySaleRequest:
+class CCProxySale3DRequest:
     ServiceType=""
     OperationType=""
     Token=""
@@ -16,6 +16,8 @@ class CCProxySaleRequest:
     Description=""
     ExtraParam=""
     Port=""
+    ErrorURL=""
+    SuccessURL=""
     CardTokenization=""
    
     def execute(self, req,configs):     
@@ -41,14 +43,18 @@ class CCProxySaleRequest:
         Description.text=req.Description
         ExtraParam=SubElement(main_root,'ExtraParam')
         ExtraParam.text=req.ExtraParam
-
+        ErrorURL=SubElement(main_root,'ErrorURL')
+        ErrorURL.text=req.ErrorURL
+        SuccessURL=SubElement(main_root,'SuccessURL')
+        SuccessURL.text=req.SuccessURL
+        Port=SubElement(main_root,'Port')
+        Port.text=req.Port
         token_root=SubElement(main_root, 'Token')
         UserCode = SubElement(token_root, 'UserCode')
         UserCode.text = req.Token.UserCode
         Pin = SubElement(token_root, 'Pin')
         Pin.text = req.Token.Pin   
-        Port=SubElement(main_root,'Port')
-        Port.text=req.Port 
+         
         creditcardinfo_root=SubElement(main_root, 'CreditCardInfo')
         CreditCardNo = SubElement(creditcardinfo_root, 'CreditCardNo')
         CreditCardNo.text = req.CreditCardInfo.CreditCardNo
@@ -72,6 +78,5 @@ class CCProxySaleRequest:
         ValidityPeriod.text = req.CardTokenization.ValidityPeriod
         CCTokenId = SubElement(cardTokenization_root, 'CCTokenId')
         CCTokenId.text = req.CardTokenization.CCTokenId
-
         result = tostring(main_root).decode('utf-8')
         return (result)

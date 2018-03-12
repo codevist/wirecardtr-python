@@ -34,8 +34,12 @@ urlpatterns = [
     url(r'^MarketPlaceMPSale/', MarketPlaceMPSale, name='MarketPlaceMPSale'),
     url(r'^MarketPlaceReleasePayment/', MarketPlaceReleasePayment, name='MarketPlaceReleasePayment'),
     url(r'^CCProxySale/', CCProxySale, name='CCProxySale'),
+    url(r'^CCProxySale3D/', CCProxySale3D, name='CCProxySale3D'),
     url(r'^WDTicketSale3DURLProxy/', WDTicketSale3DURLProxy, name='WDTicketSale3DURLProxy'),
     url(r'^WDTicketSaleURLProxy/', WDTicketSaleURLProxy, name='WDTicketSaleURLProxy'),
+    url(r'^TransactionQueryByOrderId/', TransactionQueryByOrderId, name='TransactionQueryByOrderId'),
+    url(r'^TransactionQueryByMPAY/', TransactionQueryByMPAY, name='TransactionQueryByMPAY'),
+    
     url(r'^success/', success, name='success'),
     url(r'^fail/', fail, name='fail'),
     
